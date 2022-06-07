@@ -11,6 +11,13 @@
 class Board
 {
 public:
+
+    enum WhichTurn
+    {
+        MOHRESELECT,
+        PLACESELECT
+    };
+    WhichTurn turnForWhat = MOHRESELECT;
     Board(sf::RenderWindow* _window);
     sf::RenderWindow* window;
     Cells cells;
@@ -30,7 +37,6 @@ public:
     sf::Font font;
     bool end;
     sf::Text status_text;
-
     void init();
     void draw();
     void run(string myString[8][8]);

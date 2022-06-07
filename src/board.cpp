@@ -37,13 +37,13 @@ void Board::init()
         }
     }
     // this->curr_user = this->user_x;
-    // font.loadFromFile("resources/fonts/roboto.ttf");
-    // status_text.setFont(font);
-    // status_text.setCharacterSize(30);
-    // status_text.setStyle(sf::Text::Regular);
-    // status_text.setFillColor(sf::Color::Black);
-    // status_text.setPosition(400.f, 80.f);
-    // this->update_status_text();
+    font.loadFromFile("resources/fonts/roboto.ttf");
+    status_text.setFont(font);
+    status_text.setCharacterSize(30);
+    status_text.setStyle(sf::Text::Regular);
+    status_text.setFillColor(sf::Color::Black);
+    status_text.setPosition(890.f, 80.f);
+    this->update_status_text();
 }
 
 void Board::draw()
@@ -61,7 +61,7 @@ void Board::draw()
             if (this->cells[row][column].cell_status == OCCUPIED)
                 this->window->draw(this->cells[row][column].xo->sprite);
         }
-    // this->window->draw(this->status_text);
+    this->window->draw(this->status_text);
 }
 
 bool Board::knightValid(int x, int y, int desI, int desJ, string tb[8][8], string MohreName)
@@ -238,13 +238,13 @@ void Board::run(string myString[8][8])
         }
     }
 
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
+    // for (int i = 0; i < 8; i++)
+    // {
+    //     for (int j = 0; j < 8; j++)
+    //     {
 
-        }
-    }
+    //     }
+    // }
     this->window->display();
     while (this->window->isOpen()) {
         sf::Event event;
@@ -264,40 +264,72 @@ void Board::run(string myString[8][8])
 }
 
 void Board::mouse_clicked(const sf::Vector2i& position, string myString[8][8])
-{   
+{
     int row = get_cell_index(position.y), column = get_cell_index(position.x);
-    for (int i = 0; i < 8; i++)
+    if (turnForWhat == MOHRESELECT)
     {
-        for (int j = 0; j < 8; j++)
+        if (this->cells[row][column].cell_status == OCCUPIED)
         {
-            if (myString[row][column][0] == 'P' and pawnValid(row, column, i, j, myString, myString[row][column]))
+            this->curr_user->x = row;
+            this->curr_user->y = column;
+            turnForWhat = PLACESELECT;
+            for (int i = 0; i < 8; i++)
             {
-                draw2(i, j);
-            }
-            else if (myString[row][column][0] == 'N' and knightValid(row, column, i, j, myString, myString[row][column]))
-            {
-                draw2(i, j);
-            }
-            else if (myString[row][column][0] == 'B' and bishopValid(row, column, i, j, myString, myString[row][column]))
-            {
-                draw2(i, j);
-            }
-            else if (myString[row][column][0] == 'Q' and queenValid(row, column, i, j, myString, myString[row][column]))
-            {
-                draw2(i, j);
-            }
-            else if (myString[row][column][0] == 'R' and rookValid(row, column, i, j, myString, myString[row][column]))
-            {
-                draw2(i, j);
+                for (int j = 0; j < 8; j++)
+                {
+                    if (myString[row][column][0] == 'P' and pawnValid(row, column, i, j, myString, myString[row][column]))
+                    {
+                        draw2(i, j);
+                        this->curr_user->id = PW;
+                    }
+                    else if (myString[row][column][0] == 'N' and knightValid(row, column, i, j, myString, myString[row][column]))
+                    {
+                        draw2(i, j);
+                        this->curr_user->id = NW;
+                    }
+                    else if (myString[row][column][0] == 'B' and bishopValid(row, column, i, j, myString, myString[row][column]))
+                    {
+                        draw2(i, j);
+                        this->curr_user->id = BW;
+                    }
+                    else if (myString[row][column][0] == 'Q' and queenValid(row, column, i, j, myString, myString[row][column]))
+                    {
+                        draw2(i, j);
+                        this->curr_user->id = QW;
+                    }
+                    else if (myString[row][column][0] == 'R' and rookValid(row, column, i, j, myString, myString[row][column]))
+                    {
+                        draw2(i, j);
+                        this->curr_user->id = RW;
+                    }
+                }
             }
         }
     }
-    
+    else if (turnForWhat == PLACESELECT)
+    {
+        if (this->curr_user->id == PW and pawnValid(this->curr_user->x, this->curr_user->y, row, column, myString, myString[curr_user->x][curr_user->y]))
+        {
+            cout << "hi";
+            myString[row][column] = myString[curr_user->x][curr_user->y];
+            myString[curr_user->x][curr_user->y] = "--";
+            // for (int i = 0; i <8; i++)
+            // {
+            //     for (int j = 0; j <8  ;j++)
+                    // myString[i][j] = "--";
+                // cout <<endl;
+            // }
+            turnForWhat = MOHRESELECT;
+            // put_xo_in_cell(row, column);
+            // draw();
+            run(myString);
+        }
+    }
     cout << row << " " << column << endl;
     if (row == -1 || column == -1)
         return;
-    if (this->cells[row][column].cell_status == OCCUPIED)
-        this->occupeted_cell_clicked(row, column);
+    // if (this->cells[row][column].cell_status == OCCUPIED)
+    //     this->occupeted_cell_clicked(row, column);
 }
 
 void Board::occupeted_cell_clicked(int row, int column)

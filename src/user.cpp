@@ -1,6 +1,9 @@
 #include "user.h"
 
-User::User(Id _id) : id(_id) {}
+User::User(Id _id) : id(_id) {
+    int x;
+    int y;
+}
 
 bool User::check_win(Cells &cells)
 {

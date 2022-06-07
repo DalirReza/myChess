@@ -9,6 +9,7 @@ class User
 public:
     User(Id id);
     Id id;
+    int x, y;
     bool check_win(Cells &cells);
     bool is_cell_for_you(Cell &cell);
 };
