@@ -1,6 +1,6 @@
 #include "board.h"
 #include "iostream"
-
+int t = 0;
 Board::Board(sf::RenderWindow* _window) : window(_window)
 {
     this->pw = new User(PW);
@@ -260,7 +260,7 @@ void Board::run(string myString[8][8])
                 this->mouse_clicked(sf::Mouse::getPosition(*(this->window)), myString);
             }
         }
-        this->window->clear(sf::Color(150, 150, 150));
+        this->window->clear(sf::Color(150, 150, 150));   
         this->update_status_text();
         this->draw();
         this->window->display();
@@ -314,7 +314,38 @@ void Board::mouse_clicked(const sf::Vector2i& position, string myString[8][8])
     {
         if (this->curr_user->id == PW and pawnValid(this->curr_user->x, this->curr_user->y, row, column, myString, myString[curr_user->x][curr_user->y]))
         {
-            cout << row  << " " << column << endl;
+            myString[row][column] = myString[curr_user->x][curr_user->y];
+            myString[curr_user->x][curr_user->y] = "--";
+            this->cells[curr_user->x][curr_user->y].cell_status = EMPTY;
+            turnForWhat = MOHRESELECT;
+            run(myString);
+        }
+        if (this->curr_user->id == BW and bishopValid(this->curr_user->x, this->curr_user->y, row, column, myString, myString[curr_user->x][curr_user->y]))
+        {
+            myString[row][column] = myString[curr_user->x][curr_user->y];
+            myString[curr_user->x][curr_user->y] = "--";
+            this->cells[curr_user->x][curr_user->y].cell_status = EMPTY;
+            turnForWhat = MOHRESELECT;
+            run(myString);
+        }
+        if (this->curr_user->id == NW and knightValid(this->curr_user->x, this->curr_user->y, row, column, myString, myString[curr_user->x][curr_user->y]))
+        {
+            myString[row][column] = myString[curr_user->x][curr_user->y];
+            myString[curr_user->x][curr_user->y] = "--";
+            this->cells[curr_user->x][curr_user->y].cell_status = EMPTY;
+            turnForWhat = MOHRESELECT;
+            run(myString);
+        }
+        if (this->curr_user->id == RW and rookValid(this->curr_user->x, this->curr_user->y, row, column, myString, myString[curr_user->x][curr_user->y]))
+        {
+            myString[row][column] = myString[curr_user->x][curr_user->y];
+            myString[curr_user->x][curr_user->y] = "--";
+            this->cells[curr_user->x][curr_user->y].cell_status = EMPTY;
+            turnForWhat = MOHRESELECT;
+            run(myString);
+        }
+        if (this->curr_user->id == QW and queenValid(this->curr_user->x, this->curr_user->y, row, column, myString, myString[curr_user->x][curr_user->y]))
+        {
             myString[row][column] = myString[curr_user->x][curr_user->y];
             myString[curr_user->x][curr_user->y] = "--";
             this->cells[curr_user->x][curr_user->y].cell_status = EMPTY;
@@ -348,21 +379,14 @@ void Board::cell_empty_clicked(int row, int column)
     this->end = this->curr_user->check_win(this->cells);
     if (this->end)
         return;
-    // this->curr_user = this->curr_user->id == X ? this->user_o : this->user_x;
 }
 
 void Board::put_xo_in_cell(int row, int column)
 {
-    // cout << curr_user << endl;
-    // this->curr_user->id = PW;
     XO* xo = new XO(this->curr_user->id);
-    // cout << 1 << endl;
     xo->sprite.setPosition(this->cells[row][column].rect.getPosition());
-    // cout << 2 << endl;
     this->cells[row][column].xo = xo;
-    // cout << 3 << endl;
     this->cells[row][column].cell_status = OCCUPIED;
-    // cout << 4 << endl;
 }
 
 void Board::update_status_text()
