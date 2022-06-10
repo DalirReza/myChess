@@ -59,7 +59,10 @@ void Board::draw()
         {
             this->window->draw(this->cells[row][column].rect);
             if (this->cells[row][column].cell_status == OCCUPIED)
+            {
+                // cout << row << " " << column << " " << this->cells[row][column].cell_status << endl;
                 this->window->draw(this->cells[row][column].xo->sprite);
+            }
         }
     this->window->draw(this->status_text);
 }
@@ -218,6 +221,7 @@ void Board::draw2(int x, int y)
 
 void Board::run(string myString[8][8])
 {
+    window->clear();
     this->init();
     for (int i = 0; i < 8; i++)
     {
@@ -245,7 +249,7 @@ void Board::run(string myString[8][8])
 
     //     }
     // }
-    this->window->display();
+    // this->window->display();
     while (this->window->isOpen()) {
         sf::Event event;
         while (this->window->pollEvent(event)) {
@@ -310,26 +314,16 @@ void Board::mouse_clicked(const sf::Vector2i& position, string myString[8][8])
     {
         if (this->curr_user->id == PW and pawnValid(this->curr_user->x, this->curr_user->y, row, column, myString, myString[curr_user->x][curr_user->y]))
         {
-            cout << "hi";
+            cout << row  << " " << column << endl;
             myString[row][column] = myString[curr_user->x][curr_user->y];
             myString[curr_user->x][curr_user->y] = "--";
-            // for (int i = 0; i <8; i++)
-            // {
-            //     for (int j = 0; j <8  ;j++)
-                    // myString[i][j] = "--";
-                // cout <<endl;
-            // }
+            this->cells[curr_user->x][curr_user->y].cell_status = EMPTY;
             turnForWhat = MOHRESELECT;
-            // put_xo_in_cell(row, column);
-            // draw();
             run(myString);
         }
     }
-    cout << row << " " << column << endl;
     if (row == -1 || column == -1)
         return;
-    // if (this->cells[row][column].cell_status == OCCUPIED)
-    //     this->occupeted_cell_clicked(row, column);
 }
 
 void Board::occupeted_cell_clicked(int row, int column)
